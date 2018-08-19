@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- jquery   Only because the bootstrap JS component requires this-->
+    <script src="https://code.jquery.com/jquery-2.2.3.min.js"
+            integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap  The JS components are never actually used, but included for completeness -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+            integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+            crossorigin="anonymous"></script>
+
+    <!-- This is just to add some nice styling to my cards -->
+    <style>
+        .card {
+            width: 300px;
+            height: 214px;
+            margin: 20px;
+            float: left;
+        }
+        .card > .panel-heading {
+            width: 298px;
+            height: 42px;
+        }
+    </style>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!-- because I really like navbars, and needed a place to put the `add-panel` button -->
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="http://aaronjones.info">aaronjones.info</a>
+        </div>
+
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="#">
+                    <span class="glyphicon glyphicon-user"></span>
+                    Sign in
+                </a>
+            </li>
+        </ul>
+
+        <div class="navbar-form navbar-right">
+            <!-- the important add-card button is here -->
+            <button id="addCard" class="btn btn-success">Add Card</button>
+        </div>
+    </div>
+</nav>
+
+<!-- container for all the cards -->
+<div class="container-fluid" id="card-container">
+    
+
+</div>
+<script>
+$(function(){
+
+    var model = {
+        addCard: function(obj){
+            model.data.push(obj);
+        },
+
+        data: [
+            {
+                company:"Samsung",
+                adverseParty:"Apple",
+                matter:"Patent Litigation",
+                reason: "Rounded Corners"
+            },
+            {
+                company:"Sears",
+                adverseParty:"everyone",
+                matter:"closed",
+                reason: "used spaces instead of tabs"
+            }
+        ]
+    };
+
+    var controller = {
+
+        addCard: function(){
+            //add a data object
+            var newcard = {
+                company:"",
+                            adverseParty:"",
+                            matter:"",
+                            reason:""
+                        };
+
+            model.addCard(newcard);
+            view.render();
+        },
+
+        removeCard: function(index){
+            model.data.splice(index,1);
+            view.render();
+        },
+
+        getCards: function(){
+            return model.data;
+        },
+
+        init: function(){
+            view.init();
+        }
+    };
+
+
+    var view = {
+        init: function(){
+            this.cardContainer = $("#card-container");
+            
+            var addCard = $("#addCard");
+
+            addCard.click( function(){
+                controller.addCard();
+            });
+
+            this.render();
+
+        },
+
+
+        buildcards: function(){
+            var htmlStr = '';
+            var data = controller.getCards();
+
+            for (var i in data) {
+            
+                htmlStr += 
+
+                            '<div class="card panel panel-default">' +
+                                '<div class="panel-heading">' +
+                                    '<span class="panel-title">' + data[i].company + ' </span>' +
+                                    '<a class="pull-right nav navbar-nav">' +
+                                    '<span class="glyphicon glyphicon-remove"></span>'+
+                                    ' </a>'+
+                                '</div>'+
+                                '<div class="panel-body">' +
+                                    '<span class="row"><strong>Adverse Party:</strong>'+ data[i].adverseParty +'</span>' +
+                                    '<span class="row"><strong>Matter:</strong> '+data[i].matter +' </span>' +
+                                    '<span class="row"><strong>Reason:</strong> '+data[i].reason+' </span>' +
+                                '</div>' +
+                            '</div>'
+                            
+            }
+            this.cardContainer.append(htmlStr);
+
+            var removeBtn = $(".glyphicon-remove")
+            removeBtn.click(function(){
+                var index = removeBtn.index(this);
+                controller.removeCard(index);
+
+            });
+
+        },
+
+        render: function(){
+            this.cardContainer.empty();
+            this.buildcards();
+        }
+    }
+
+
+controller.init();
+});
+
+
+
+</script>
+</body>
+</html>
